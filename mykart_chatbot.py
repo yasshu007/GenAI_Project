@@ -424,7 +424,7 @@ with st.sidebar:
     st.markdown("---")
     st.caption("Ingesting Sales data from SQL to knowledge base.")
     if st.button("🗑️ Ingest Sales Data to KB"):
-        from db_data_extract.sql_data_exec import extract_and_prepare_data    
+        from sql_data_exec import extract_and_prepare_data    
         df = extract_and_prepare_data('mykart.db')
         # Convert the 'text_to_embed' column to a list of strings for FAISS ingestion   
         texts = df['text_to_embed'].tolist()
