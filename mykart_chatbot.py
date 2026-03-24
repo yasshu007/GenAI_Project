@@ -410,7 +410,7 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("### 📄 Upload Documents")
     st.caption("Each PDF is merged into the shared knowledge base.")
-
+ 
     uploaded_file = st.file_uploader("Choose a PDF", type="pdf", label_visibility="collapsed")
 
     if uploaded_file:
@@ -420,6 +420,26 @@ with st.sidebar:
             st.markdown(message)
             if ingested:
                 st.session_state.db = load_combined_index()
+       
+    st.markdown("---")
+    st.caption("Ingesting Sales data from SQL to knowledge base.")
+    if st.button("🗑️ Ingest Sales Data to KB"):
+        from db_data_extract.sql_data_exec import extract_and_prepare_data    
+        df = extract_and_prepare_data('mykart.db')
+        # Convert the 'text_to_embed' column to a list of strings for FAISS ingestion   
+        texts = df['text_to_embed'].tolist()
+        new_store = FAISS.from_texts(texts, embedding_model)
+        if os.path.exists(COMBINED_INDEX):
+            combined = FAISS.load_local(
+                COMBINED_INDEX, embedding_model, allow_dangerous_deserialization=True
+            )
+            combined.merge_from(new_store)   # ← incremental merge
+            combined.save_local(COMBINED_INDEX)
+        else:
+            new_store.save_local(COMBINED_INDEX)    
+        st.session_state.db = load_combined_index()
+
+        st.markdown("✅ Sales data ingested into knowledge base.")
 
     st.markdown("---")
     st.markdown("### 📚 Knowledge Base")
