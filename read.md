@@ -1,1 +1,0 @@
-This is GenAI project on retail store featuring different data sources like DB data for historical sales, pdf data for contacts, Company info and policy data, web page for investory and product descriptions.
