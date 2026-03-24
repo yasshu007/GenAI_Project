@@ -1,0 +1,37 @@
+# MyKart RAG — Python dependencies
+
+# Create separate virtual environment for this project: Local system(Not Cloud)
+# py -3.12 -m venv .venv
+
+# Install Basic Dependencies:
+# pip install pandas
+# pip install poetry
+
+
+# Use the command to install: pip install -r requirements.txt
+
+# Dependencies:
+streamlit>=1.55.0
+pymupdf==1.25.3  # fitz — PDF text extraction
+faiss-cpu==1.11.0  # FAISS vector similarity search
+
+# Google Cloud
+#google-cloud-aiplatform>=1.70.0
+#google-cloud-storage>=2.16.0
+
+
+# LangChain — sub-packages only (avoids langchain.chains fragmentation)
+langchain-core>=0.3.0
+langchain-community>=0.3.0
+langchain-text-splitters>=0.3.0
+langchain-google-vertexai>=3.2.0
+langchain-google-genai>=2.1.0
+
+# PDF parsing
+pypdf>=4.0.0
+
+
+
+
+# .env file support
+python-dotenv>=1.0.0
