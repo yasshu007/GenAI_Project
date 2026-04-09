@@ -47,35 +47,34 @@ BRAND_ORANGE2 = "#FF6B2B"   # lighter orange accent
 # ── SVG Avatars (inline, no external deps) ───────────────────────────────────
 # User avatar: professional person silhouette in MyKart dark/orange
 USER_AVATAR_SVG = """
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <circle cx="50" cy="50" r="50" fill="#3A3A3A"/>
-  <circle cx="50" cy="36" r="16" fill="#F5C518"/>
-  <ellipse cx="50" cy="80" rx="26" ry="20" fill="#F5C518"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="user-avatar">
+  <rect width="96" height="96" x="2" y="2" rx="28" fill="#2D3436" stroke="#3A3A3A" stroke-width="2"/>
+  
+  <path d="M30 2 C 10 2, 2 10, 2 30" fill="none" stroke="white" stroke-width="1" stroke-opacity="0.1"/>
+
+  <circle cx="50" cy="38" r="14" fill="#FFD700"/>
+  
+  <path d="M25 80 Q 25 60 50 60 Q 75 60 75 80" fill="none" stroke="#FFD700" stroke-width="12" stroke-linecap="round"/>
+  
+  <circle cx="80" cy="80" r="8" fill="#E8500A" stroke="#2D3436" stroke-width="3"/>
 </svg>
 """
 
-# Assistant avatar: stylized bee in MyKart orange
+# Assistant avatar: stylized basket in MyKart orange
 ASSISTANT_AVATAR_SVG = """
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <circle cx="50" cy="50" r="50" fill="#E8500A"/>
-  <!-- Body -->
-  <ellipse cx="50" cy="58" rx="14" ry="18" fill="#3A3A3A"/>
-  <!-- Stripes -->
-  <rect x="36" y="53" width="28" height="5" rx="2" fill="#F5C518"/>
-  <rect x="36" y="62" width="28" height="5" rx="2" fill="#F5C518"/>
-  <!-- Head -->
-  <circle cx="50" cy="38" r="11" fill="#F5C518"/>
-  <!-- Eyes -->
-  <circle cx="46" cy="37" r="2.5" fill="#3A3A3A"/>
-  <circle cx="54" cy="37" r="2.5" fill="#3A3A3A"/>
-  <!-- Antennae -->
-  <line x1="46" y1="28" x2="41" y2="20" stroke="#3A3A3A" stroke-width="2" stroke-linecap="round"/>
-  <circle cx="41" cy="19" r="2.5" fill="#3A3A3A"/>
-  <line x1="54" y1="28" x2="59" y2="20" stroke="#3A3A3A" stroke-width="2" stroke-linecap="round"/>
-  <circle cx="59" cy="19" r="2.5" fill="#3A3A3A"/>
-  <!-- Wings -->
-  <ellipse cx="34" cy="48" rx="11" ry="7" fill="white" fill-opacity="0.75" transform="rotate(-20 34 48)"/>
-  <ellipse cx="66" cy="48" rx="11" ry="7" fill="white" fill-opacity="0.75" transform="rotate(20 66 48)"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="bot-avatar">
+  <circle cx="50" cy="50" r="48" fill="#E8500A" />
+  
+  <path d="M25 40 Q 50 15 75 40" fill="none" stroke="#FFD700" stroke-width="6" stroke-linecap="round" class="basket-handle"/>
+  
+  <path d="M15 40 H 85 L 78 85 H 22 Z" fill="#FFFFFF" stroke="#2D3436" stroke-width="2" class="basket-body"/>
+  
+  <circle cx="35" cy="55" r="4" fill="#FFD700"/>
+  <circle cx="50" cy="55" r="4" fill="#E8500A"/>
+  <circle cx="65" cy="55" r="4" fill="#FFD700"/>
+  
+  <circle cx="42" cy="70" r="3" fill="#2D3436"/>
+  <circle cx="58" cy="70" r="3" fill="#2D3436"/>
 </svg>
 """
 
@@ -88,22 +87,18 @@ ASSISTANT_AVATAR = svg_to_data_uri(ASSISTANT_AVATAR_SVG)
 
 # ── MyKart Logo SVG (for header) ─────────────────────────────────────────────
 LOGO_SVG = """
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 80">
-  <rect width="140" height="80" rx="12" fill="#E8500A"/>
-  <ellipse cx="42" cy="46" rx="10" ry="13" fill="#3A3A3A"/>
-  <rect x="32" y="41" width="20" height="4" rx="2" fill="#F5C518"/>
-  <rect x="32" y="48" width="20" height="4" rx="2" fill="#F5C518"/>
-  <circle cx="42" cy="31" r="9" fill="#F5C518"/>
-  <circle cx="39" cy="30" r="2" fill="#3A3A3A"/>
-  <circle cx="45" cy="30" r="2" fill="#3A3A3A"/>
-  <line x1="39" y1="23" x2="35" y2="16" stroke="#3A3A3A" stroke-width="1.8" stroke-linecap="round"/>
-  <circle cx="34" cy="15" r="2" fill="#3A3A3A"/>
-  <line x1="45" y1="23" x2="49" y2="16" stroke="#3A3A3A" stroke-width="1.8" stroke-linecap="round"/>
-  <circle cx="50" cy="15" r="2" fill="#3A3A3A"/>
-  <ellipse cx="30" cy="38" rx="9" ry="6" fill="white" fill-opacity="0.8" transform="rotate(-15 30 38)"/>
-  <ellipse cx="54" cy="38" rx="9" ry="6" fill="white" fill-opacity="0.8" transform="rotate(15 54 38)"/>
-  <text x="68" y="34" font-family="'Trebuchet MS', sans-serif" font-size="22" font-weight="800" fill="white">AI</text>
-  <text x="68" y="60" font-family="'Trebuchet MS', sans-serif" font-size="22" font-weight="800" fill="white">Bees</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="site-shopping-logo">
+  <circle cx="50" cy="50" r="48" fill="#2D3436" stroke="#3A3A3A" stroke-width="2"/>
+  
+  <circle cx="42" cy="-10" r="5" fill="#FFD700" class="logo-drop-item logo-item-1" />
+  
+  <circle cx="58" cy="-10" r="5" fill="#E8500A" class="logo-drop-item logo-item-2" />
+
+  <path d="M30 40 Q 50 10 70 40" fill="none" stroke="#FFD700" stroke-width="5" stroke-linecap="round" class="logo-basket-handle"/>
+  
+  <path d="M20 40 H 80 L 72 80 H 28 Z" fill="#FFFFFF" class="logo-basket-body" />
+  
+  <rect x="25" y="50" width="50" height="4" rx="2" fill="#FFD700" opacity="0.9" />
 </svg>
 """
 
@@ -362,7 +357,7 @@ def ingest_pdf(pdf_file) -> tuple[bool, str]:
     registry[md5_hash] = pdf_file.name
     save_registry(registry)
 
-    return True, f"✅ **{pdf_file.name}** ingested — {len(chunks)} chunks added to knowledge base."
+    return True, f"✅ **{pdf_file.name}** ingested — {len(chunks)} chunks added to KB."
 
 def web_scrap():
 
@@ -392,7 +387,7 @@ def web_scrap():
 
     combined.save_local(COMBINED_INDEX)
     print("--- FAISS Index Created ---")
-    return True, f"✅ Web page data scraping done... Added to knowledge base."
+    return True, f"✅ Web page data scraping done... Added to KB."
 
 
 # Function to load the combined FAISS index (if it exists)
@@ -410,7 +405,7 @@ def build_prompt(context: str, history: list[dict], question: str) -> list[dict]
         "content": (
             "You are the MyKart Online Store Assistant — an expert AI helpdesk agent in answering questions about the MyKart online store, its products and also data about historical purchases. "
             "You need to answer only using the provided document context and data sources only. "
-            "Be concise, warm, encouraging, and professional — in the spirit of MyKart Academy. "
+            "Be concise, warm, encouraging, and professional — in the spirit of MyKart Online Store. "
             "If the answer is not in the context or data sources, say so honestly and suggest reaching out to the MyKart team without any other thought."
         ),
     }
@@ -435,7 +430,7 @@ def build_prompt(context: str, history: list[dict], question: str) -> list[dict]
 # ══════════════════════════════════════════════════════════════════════════════
 st.set_page_config(
     page_title="MyKart Online Store Assistant",
-    page_icon="🐝",
+    page_icon="🛒",
     layout="centered"
 )
 
@@ -448,8 +443,8 @@ st.markdown(f"""
 <div class="mykart-header">
     <img src="data:image/svg+xml;base64,{logo_b64}" width="140" alt="MyKart Logo"/>
     <div class="mykart-header-text">
-        <h1>Online Store<span>Assistant</span></h1>
-        <p>🐝 Incremental RAG &nbsp;·&nbsp; Gemini 2.5 Flash &nbsp;·&nbsp; FAISS &nbsp;·&nbsp; MyKart Store</p>
+        <h1>Online Store<span> Assistant</span></h1>
+        <p> 🛒 Your AI powered assistant &nbsp; &nbsp; &nbsp; MyKart Store</p>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -477,7 +472,7 @@ with st.sidebar:
 
     if uploaded_file:
         if st.button("➕ Ingest into KB"):
-            with st.spinner("🐝 Embedding and merging…"):
+            with st.spinner("🛒 Embedding and merging…"):
                 ingested, message = ingest_pdf(uploaded_file)
             st.markdown(message)
             if ingested:
@@ -487,7 +482,7 @@ with st.sidebar:
     st.caption("Each page is merged into the shared KB.")
  
     if st.button("➕ Webscraping into KB"):
-        with st.spinner("🐝 Embedding and merging…"):
+        with st.spinner("🛒 Embedding and merging…"):
             ingested, message = web_scrap()
         st.markdown(message)
         if ingested:
@@ -553,7 +548,7 @@ with st.sidebar:
     st.markdown("---")
     st.markdown(
         "<div style='text-align:center; color:#888; font-size:0.75rem;'>"
-        "© 2026 MyKart Academy<br/>All rights reserved</div>",
+        "©2026 MyKart Academy<br/>All rights reserved</div>",
         unsafe_allow_html=True
     )
 
@@ -570,9 +565,9 @@ if not st.session_state.db:
         font-family: 'Nunito', sans-serif;
         margin-top: 20px;
     ">
-        <div style="font-size: 3rem;">🐝</div>
+        <div style="font-size: 3rem;">�</div>
         <h3 style="color: #E8500A; margin: 10px 0 6px 0;">Welcome to MyKart Online Store Assistant</h3>
-        <p style="color: #666; margin: 0;">Upload and ingest a PDF from the sidebar to start asking questions.</p>
+        <p style="color: #666; margin: 0;">Upload and ingest data to start asking questions.</p>
     </div>
     """, unsafe_allow_html=True)
     st.stop()
@@ -585,7 +580,7 @@ for turn in st.session_state.chat_history:
         st.markdown(turn["answer"])
 
 # Chat input
-user_query = st.chat_input("Chat with MyKart Online Store Assistant…")
+user_query = st.chat_input("Chat with MyKart Assistant…")
 
 if user_query:
     with st.chat_message("user", avatar=USER_AVATAR):
@@ -596,7 +591,7 @@ if user_query:
     messages       = build_prompt(context, st.session_state.chat_history, user_query)
 
     with st.chat_message("assistant", avatar=ASSISTANT_AVATAR):
-        with st.spinner("🐝 Buzzing through the knowledge base…"):
+        with st.spinner("🛒 Buzzing through the KB…"):
             answer = llm.invoke(messages).content.strip()
         st.markdown(answer)
 
