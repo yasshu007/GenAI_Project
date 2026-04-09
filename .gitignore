@@ -1,3 +1,4 @@
 .env
 .venv
 __pychache__/
+db_data_extract/__pycache__/
