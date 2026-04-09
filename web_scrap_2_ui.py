@@ -1,3 +1,6 @@
+# This is the sample script that shows how to use web scraping context.
+# Please do not change this script. This needs to be used as is for testing the web scraping context.
+
 import os
 import faiss
 from llama_index.core import VectorStoreIndex, StorageContext, Settings
@@ -9,8 +12,9 @@ from llama_index.llms.google_genai import GoogleGenAI
 from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
 from dotenv import load_dotenv
 
-# This is the sample script that shows how to use web scraping context.
-# Please do not change this script. This needs to be used as is for testing the web scraping context.
+# LangChain Splitter Imports
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from llama_index.core.node_parser import LangchainNodeParser
 
 load_dotenv()
 
@@ -20,6 +24,17 @@ api_key = os.getenv("GOOGLE_API_KEY")
 
 Settings.llm = GoogleGenAI(model="models/gemini-2.5-flash", api_key=api_key)
 Settings.embed_model = GoogleGenAIEmbedding(model_name="models/gemini-embedding-001", api_key=api_key)
+
+
+# 2. Setup the Recursive Character Splitter
+# This splitter tries to keep paragraphs, then sentences, then words together.
+lc_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=100,
+    separators=["\n\n", "\n", " ", ""]
+)
+# Wrap it so LlamaIndex can use it
+Settings.node_parser = LangchainNodeParser(lc_splitter)
 
 # Get embedding dimension dynamically
 test_embedding = Settings.embed_model.get_text_embedding("test")

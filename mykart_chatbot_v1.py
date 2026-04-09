@@ -1,9 +1,9 @@
 # MyKart Online Store Assistant
-# This script is working with all the scenarios: 1. DB data ingestion, 2. Web scraping, 3. PDF ingestion - all in one place. This is the main script to run for the final demo.
+# This script is working with the scenarios: 1. DB data ingestion, 2. PDF ingestion 
+
 import os
 import json
 import base64
-import faiss
 import streamlit as st
 import hashlib
 import fitz
@@ -12,14 +12,6 @@ from langchain_community.vectorstores import FAISS
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from dotenv import load_dotenv
 import asyncio
-from llama_index.core import VectorStoreIndex, StorageContext, Settings
-from llama_index.vector_stores.faiss import FaissVectorStore
-from llama_index.readers.web import SimpleWebPageReader
-
-# 1. Import the Google-specific modules
-from llama_index.llms.google_genai import GoogleGenAI
-from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
-from llama_index.core.node_parser import LangchainNodeParser
 
 # Fix for Streamlit's threaded environment
 try:
@@ -28,8 +20,6 @@ except RuntimeError:
     asyncio.set_event_loop(asyncio.new_event_loop())
 
 load_dotenv()
-
-
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 FAISS_INDEX_DIR = "faiss_store"
@@ -288,11 +278,6 @@ llm = ChatGoogleGenerativeAI(
     temperature=0.5,
 )
 
-Settings.llm = GoogleGenAI(model="models/gemini-2.5-flash", api_key=os.getenv("GOOGLE_API_KEY"))
-Settings.embed_model = GoogleGenAIEmbedding(model_name="models/gemini-embedding-001", api_key=os.getenv("GOOGLE_API_KEY"))
-
-
-
 # ── Registry Helpers ──────────────────────────────────────────────────────────
 def load_registry() -> dict:
     if os.path.exists(REGISTRY_FILE):
@@ -318,20 +303,6 @@ def compute_md5(text: str) -> str:
 def chunk_text(text: str) -> list[str]:
     splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100)
     return splitter.split_text(text)
-
-
-# 2. Setup the Recursive Character Splitter
-# This splitter tries to keep paragraphs, then sentences, then words together.
-lc_splitter = RecursiveCharacterTextSplitter(
-    chunk_size=1000,
-    chunk_overlap=100,
-    separators=["\n\n", "\n", " ", ""]
-)
-
-# Wrap it so LlamaIndex can use it
-Settings.node_parser = LangchainNodeParser(lc_splitter)
-
-
 
 # function to ingest PDF: 
 # Extract -> Hexadecimal fingerprint -> Deduplicate -> Embeddings creation -> Merge into combined FAISS index
@@ -363,37 +334,6 @@ def ingest_pdf(pdf_file) -> tuple[bool, str]:
     save_registry(registry)
 
     return True, f"✅ **{pdf_file.name}** ingested — {len(chunks)} chunks added to knowledge base."
-
-def web_scrap():
-
-    """
-    Incremental RAG ingestion:
-    Extract → fingerprint → deduplicate → embed → merge into combined FAISS index.
-    """
-
-    # Get embedding dimension dynamically
-    test_embedding = Settings.embed_model.get_text_embedding("test")
-    d = len(test_embedding)
-    url = "http://mykart_yash.storage.googleapis.com/index.html"
-
-    print(f"--- Scraping {url} ---")
-    documents = SimpleWebPageReader(html_to_text=True).load_data([url])
-    print("--- Creating FAISS Index ---")
-    texts = [doc.text for doc in documents]
-    new_store = FAISS.from_texts(texts, embedding_model)
-
-    if os.path.exists(COMBINED_INDEX):
-        combined = FAISS.load_local(
-            COMBINED_INDEX, embedding_model, allow_dangerous_deserialization=True
-        )
-        combined.merge_from(new_store)
-    else:
-        combined = new_store
-
-    combined.save_local(COMBINED_INDEX)
-    print("--- FAISS Index Created ---")
-    return True, f"✅ Web page data scraping done... Added to knowledge base."
-
 
 # Function to load the combined FAISS index (if it exists)
 def load_combined_index():
@@ -471,32 +411,20 @@ with st.sidebar:
 
     st.markdown("---")
     st.markdown("### 📄 Upload Documents")
-    st.caption("Each PDF is merged into the shared KB.")
+    st.caption("Each PDF is merged into the shared knowledge base.")
  
     uploaded_file = st.file_uploader("Choose a PDF", type="pdf", label_visibility="collapsed")
 
     if uploaded_file:
-        if st.button("➕ Ingest into KB"):
+        if st.button("➕ Ingest into Knowledge Base"):
             with st.spinner("🐝 Embedding and merging…"):
                 ingested, message = ingest_pdf(uploaded_file)
             st.markdown(message)
             if ingested:
                 st.session_state.db = load_combined_index()
+       
     st.markdown("---")
-    st.markdown("### 📄 Webscraping Data from page")
-    st.caption("Each page is merged into the shared KB.")
- 
-    if st.button("➕ Webscraping into KB"):
-        with st.spinner("🐝 Embedding and merging…"):
-            ingested, message = web_scrap()
-        st.markdown(message)
-        if ingested:
-            st.session_state.db = load_combined_index()
-    
-        st.markdown("✅ Webscraping data ingested into KB.")
-
-    st.markdown("---")
-    st.caption("Ingesting Sales data from SQL to KB.")
+    st.caption("Ingesting Sales data from SQL to knowledge base.")
     if st.button("🗑️ Ingest Sales Data to KB"):
         from sql_data_exec import extract_and_prepare_data    
         df = extract_and_prepare_data('mykart.db')
@@ -513,7 +441,7 @@ with st.sidebar:
             new_store.save_local(COMBINED_INDEX)    
         st.session_state.db = load_combined_index()
 
-        st.markdown("✅ Sales data ingested into KB.")
+        st.markdown("✅ Sales data ingested into knowledge base.")
 
     st.markdown("---")
     st.markdown("### 📚 Knowledge Base")
@@ -585,7 +513,7 @@ for turn in st.session_state.chat_history:
         st.markdown(turn["answer"])
 
 # Chat input
-user_query = st.chat_input("Chat with MyKart Online Store Assistant…")
+user_query = st.chat_input("Ask the MyKart Online Store Assistant anything…")
 
 if user_query:
     with st.chat_message("user", avatar=USER_AVATAR):
