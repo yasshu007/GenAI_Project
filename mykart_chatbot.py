@@ -3,6 +3,7 @@
 import os
 import json
 import base64
+import uuid
 import faiss
 import streamlit as st
 import hashlib
@@ -406,11 +407,13 @@ def build_prompt(context: str, history: list[dict], question: str) -> list[dict]
             "You are the MyKart Online Store Assistant — an expert AI helpdesk agent in answering questions about the MyKart online store, its products and also data about historical purchases. "
             "You need to answer only using the provided document context and data sources only. "
             "Be concise, warm, encouraging, and professional — in the spirit of MyKart Online Store. "
+             "Use the provided context AND the conversation history to answer. "
+            "If the user asks a follow-up question, refer back to previous products or data discussed."
             "If the answer is not in the context or data sources, say so honestly and suggest reaching out to the MyKart team without any other thought."
         ),
     }
     history_messages = []
-    for turn in history:
+    for turn in history[-10:]:
         history_messages.append({"role": "user",      "content": turn["question"]})
         history_messages.append({"role": "assistant", "content": turn["answer"]})
 
@@ -450,6 +453,9 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ── Session State Init ────────────────────────────────────────────────────────
+if "session_id" not in st.session_state:
+    st.session_state.session_id = str(uuid.uuid4())
+                                      
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 if "db" not in st.session_state:
@@ -536,6 +542,8 @@ with st.sidebar:
             st.rerun()
 
     st.markdown("---")
+    st.caption(f"**Session ID:** `{st.session_state.session_id}`")
+    st.markdown("---")
     st.markdown("**💡 Try asking:**")
     for q in [
         "How to reach out to the MyKart team?",
@@ -586,9 +594,20 @@ if user_query:
     with st.chat_message("user", avatar=USER_AVATAR):
         st.markdown(user_query)
 
+    # Step 1: (Optional but Recommended) Rewrite query for better search
+    # This helps when the user says "What's the price?" (referring to the previous item)
+    search_query = user_query
+    if len(st.session_state.chat_history) > 0:
+        # Simple logic: combine recent history with current query for the vector search
+        last_answer = st.session_state.chat_history[-1]["answer"][:200]
+        search_query = f"{last_answer} {user_query}"
+
+    # Step 2: Retrieve context based on the augmented query
     similar_chunks = st.session_state.db.similarity_search(user_query, k=4)
     context        = "\n\n".join(chunk.page_content.strip() for chunk in similar_chunks)
-    messages       = build_prompt(context, st.session_state.chat_history, user_query)
+
+    # Step 3: Build messages with full history
+    messages = build_prompt(context, st.session_state.chat_history, user_query)
 
     with st.chat_message("assistant", avatar=ASSISTANT_AVATAR):
         with st.spinner("🛒 Buzzing through the KB…"):
